@@ -33,14 +33,49 @@ train_data <- iris[train_indices,]
 test_data <- iris[-train_indices,]
 
 
-### using Random-Forest for classification 
+### using Random-Forest for classification
+### loading data
+library(randomForest)
+rf_model <- randomForest(Species ~ ., data = train_data)
+
+#### make predictions
+predictions <- predict(rf_model, newdata = test_data)
+
+table(Predicted = predictions, Actual = test_data$Species)
 
 
+### Working on mtcars (using LASSO regression)
+data(mtcars)
+library(tibble)
+
+data(mtcars) 
+
+X <- as.matrix(mtcars[, -1]) 
+
+y <- mtcars[, 1]
+
+### Fitting the Lasso regression model
+##glmnet(): Fits a regularized linear model; family = "gaussian": Specifies linear regression.
+## alpha = 1: Sets the model type to Lasso regression.
+## summary(): Displays a summary of the fitted model.
+
+mtcar_model <- glmnet(X, y, family = "gaussian", alpha = 1)
+summary(mtcar_model)
+plot(mtcar_model, label = TRUE)
+
+## Getting model coefficients
+## We extract the coefficients at a specific value of lambda.
+## coef(): Retrieves coefficients from the fitted model.
+## s: Specifies the lambda value at which to extract them.
+
+coef(mtcar_model, , s = 0.1)
+
+## Making predictions with the model
+y_pred <- predict(mtcar_model, X)
 
 
+### Fitting a Lasso model with cross-validation
+fit <- cv.glmnet(X, y, alpha = 1, nfolds = 5)
+summary(fit)
 
-
-
-
-
-
+plot(fit)
