@@ -1,13 +1,13 @@
 ######### Author : Adeyemi Akinade
 ######### Place : Clemson University, SC
 ######### lab : Gopalan's lab
-######### Date : September 23, 2025
+######### Date : September 22, 2025
 ######### Project : Comparative Epigenetics of Ageing
 ######### This script was written to determine the linear regression between age and beta values of 
 ######### DNAm levels in blood tissue in each species
 
 
-######################## LINEAR REGRESSION IN DNA METHYLATION SKIN SAMPLES (AGE IN YEARS) ##########################################
+######################## LINEAR REGRESSION IN DNA METHYLATION BLOOD SAMPLES ONLY ##########################################
 
 ## saving the data as .rds
 cat("loading the DNA methylation data...", "\n")
@@ -20,9 +20,10 @@ cat("Finished loading the species metadata...", "\n")
 
 # Loading the necessary libraries
 library(data.table)
+library(data.table, lib.loc="~/Rlibs")
 library(dplyr)
 
-blood_regression_stream_residuals <- function(data, metadata, output_file = "blood_regression_age_in_years_wt_residuals_ID.csv") {
+blood_regression_stream_residuals <- function(data, metadata, output_file = "blood_regression_relative_age_wt_residuals_ID.csv") {
   library(data.table)
   
   # Initialize CSV
@@ -48,11 +49,11 @@ blood_regression_stream_residuals <- function(data, metadata, output_file = "blo
     sampled_ids <- species_metadata$geo_accession
     matched_indices <- match(sampled_ids, colnames(data))
     sampled_data <- data[, matched_indices, drop = FALSE]
-    age_years_data <- as.numeric(as.character(species_metadata$age_years))
+    life_span_data <- as.numeric(as.character(species_metadata$lifespan_percent))
     cpg_sites <- rownames(sampled_data)
     
     for (i in seq_len(nrow(sampled_data))) {
-      model <- lm(age_years_data ~ as.numeric(sampled_data[i, ]))
+      model <- lm(life_span_data ~ as.numeric(sampled_data[i, ]))
       coefs <- coef(model)
       summ <- summary(model)
       conf <- confint(model)
@@ -82,11 +83,8 @@ blood_regression_stream_residuals <- function(data, metadata, output_file = "blo
 blood_regression_stream_residuals(
   data = blood_metadata_wt_life_span_betas,
   metadata = blood_metadata_wt_life_span,
-  output_file = "~/Phd_data/outputs/blood_regression_age_in_years_wt_residuals_ID.csv"
+  output_file = "~/Phd_data/outputs/blood_regression_relative_age_wt_residuals_ID.csv"
 )
-
-
-
 
 
 

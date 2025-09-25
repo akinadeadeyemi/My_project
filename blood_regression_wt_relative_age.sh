@@ -13,4 +13,4 @@ module load r/4.5.0
 
 export R_LIBS_USER=/home/aakinad/R/x86_64-pc-linux-gnu-library/4.4
 
-Rscript blood_regression_relative_age_test.R
+Rscript blood_regression_wt_relative_age.R
