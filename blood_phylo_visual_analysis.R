@@ -12,8 +12,8 @@
 library(dplyr)
 
 #load blood_phylo_result
-blood_phylo_result <- readRDS("~/Downloads/blood_phylo_result.rds")
-blood_phylo_rel_age_result  <- readRDS("~/Downloads/blood_phylo_age_result.rds")
+blood_phylo_result <- readRDS("/Users/aakinad/Downloads/PHD FOLDER/blood_phylo_result.rds")
+blood_phylo_rel_age_result  <- readRDS("/Users/aakinad/Downloads/PHD FOLDER/blood_phylo_age_result.rds")
 blood_phylo_sig <- blood_phylo_result %>% filter(p_val < 0.05)
 
 ## viewing significant CpG sites.
@@ -30,11 +30,11 @@ View(blood_phylo_lambda_sig)
 ## topmost CpG site with high lambda and sigma2 cg27413543
 
 ## loading the raw beta values
-blood_metadata_wt_life_span_betas <- readRDS("~/Downloads/blood_metadata_wt_life_span_betas.rds")
-blood_metadata_wt_life_span <- readRDS("~/Downloads/blood_metadata_wt_life_span.rds")
+blood_metadata_wt_life_span_betas <- readRDS("/Users/aakinad/Downloads/PHD FOLDER/blood_metadata_wt_life_span_betas.rds")
+blood_metadata_wt_life_span <- readRDS("/Users/aakinad/Downloads/PHD FOLDER/blood_metadata_wt_life_span.rds")
 
 ## selecting the cpg sites
-cg_27413543_betas <- t(blood_metadata_wt_life_span_betas["cg22704389", ])
+cg_27413543_betas <- t(blood_metadata_wt_life_span_betas["cg16867657", ])
 
 ## rownames to column names
 library(tibble)
@@ -84,6 +84,39 @@ ggplot(cg_27413543_betas_with_age, aes(x = age_years, y = cg22704389, color = sp
     color = "Species"
   ) +
   theme(legend.position = "top")  # Hide legend to reduce clutter
+
+
+
+library(dplyr)
+library(ggplot2)
+
+# Choose 4 species
+four_species <- c("Homo sapiens", "Mus musculus", "Rattus norvegicus", "Heterocephalus glaber")
+
+cg_subset <- cg_27413543_betas_with_age %>%
+  filter(species %in% four_species)
+
+ggplot(cg_subset, aes(x = age_years, y = cg16867657, color = species)) +
+  geom_point(size = 1.8, alpha = 0.7) +
+  geom_smooth(method = "lm", se = FALSE) +
+  facet_wrap(~species, scales = "free_x") +
+  theme_minimal() +
+  theme(
+    axis.text.x = element_text(color = "black", size = 12),
+    axis.text.y = element_text(color = "black", size = 12),
+    axis.title.x = element_text(size = 14, face = "bold"),
+    axis.title.y = element_text(size = 14, face = "italic"),
+    plot.title = element_text(hjust = 0.5, size = 16, face = "bold"),
+    legend.title = element_text(size = 12),
+    legend.text = element_text(size = 11)
+  ) +
+  labs(
+    title = "DNA Methylation at cg00270194 vs Age (4 Species)",
+    x = "Age (years)",
+    y = "DNAm methylation level",
+    color = "Species"
+  ) +
+  theme(legend.position = "top")
 
 
 library(ggplot2)
